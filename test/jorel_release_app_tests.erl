@@ -61,12 +61,12 @@ jorel_release_jorel_sample_test_() ->
             ?assertEqual(ok, bucfile:copy("test_apps/0.0.2/jorel_sample", ".tests/0.0.2", [recursive])),
             ?assertEqual(ok, bucfile:make_dir(".tests/0.0.2/jorel_sample/.jorel")),
             ?assertEqual(ok, bucfile:copy("jorel", ".tests/0.0.2/jorel_sample/.jorel/")),
-            ?assertEqual(ok, bucfile:copy(".tests/0.0.1/jorel_sample/_jorel", ".tests/0.0.2/jorel_sample", [recursive])),
+            ?assertEqual(ok, bucfile:copy(".tests/0.0.1/jorel_sample/_jorel", ".tests/0.0.2/jorel_sample/", [recursive])),
             ?assertMatch({ok, _}, 
                          sh:sh("make jorel.release",
                                [return_on_error, {cd, ".tests/0.0.2/jorel_sample"}])),
             ?assertEqual(ok, bucfile:copy(".tests/0.0.2/jorel_sample/_jorel/jorel_sample/releases/jorel_sample-0.0.2.tar.gz",
-                                          ".tests/0.0.1/jorel_sample/_jorel/jorel_sample/releases/jorel_sample-0.0.2.tar.gz"))
+                                          ".tests/0.0.1/jorel_sample/_jorel/jorel_sample/releases/"))
         end}
      , {timeout, 200, 
         fun() ->
