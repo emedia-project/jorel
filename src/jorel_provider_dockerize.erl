@@ -6,10 +6,11 @@
 -export([init/1, do/1]).
 
 -define(PROVIDER, dockerize).
--define(BUILD(OutputDir, Name), [
-                                 {copy, [".", "/app/" ++ Name ++ "/"]},
-                                 {workdir, "/app/" ++ Name}
-                                ]).
+-define(BUILD_PREFIX,"/app/").
+-define(BUILD(Name), [
+                      {copy, [".", ?BUILD_PREFIX ++ Name ++ "/"]},
+                      {workdir, ?BUILD_PREFIX ++ Name}
+                     ]).
 -define(BUILD_ERLANG_CMD(Config), [
                      {cmd, "make distclean && make jorel.release c=" ++ Config}
                     ]).
@@ -87,14 +88,13 @@ build_in_docker(State, Data) ->
   BuildImageName = string:to_lower("jbi_" ++ bucrandom:randstr(8)),
   BuildContainerName = string:to_lower("jbc_" ++ bucrandom:randstr(8)),
   BuildPath = buclists:keyfind(output_dir, 1, Data, "_jorel_docker"),
-  {output_dir, OutputDir} = jorel_config:get(State, output_dir),
-  DockerAppPath = filename:join(["/app", RelName, OutputDir]),
+  DockerAppPath = filename:join([?BUILD_PREFIX, RelName]),
   case file:open(Dockerfile, [write,binary]) of
     {ok, FD} ->
       ?INFO("* Create ~s", [Dockerfile]),
       DockerfileData = [{from, FromImageName}, Maintainer] ++
         buclists:keyfind(prebuild, 1, Conf, []) ++
-        ?BUILD(OutputDir, bucs:to_string(RelName)) ++
+        ?BUILD(bucs:to_string(RelName)) ++
         buclists:keyfind(postbuild, 1, Conf, []) ++
         case jorel_elixir:exist() of
           true ->

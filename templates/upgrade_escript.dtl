@@ -46,7 +46,7 @@ main(["install", RelName, NodeName, Cookie, Version]) ->
           install_and_permafy(TargetNode, RelName, Vsn);
         {error, UnpackReason} ->
           print_existing_versions(TargetNode),
-          ?INFO("Unpack failed: ~s~n",[UnpackReason]),
+          ?INFO("Unpack failed: ~p~n",[UnpackReason]),
           erlang:halt(2)
       end;
     old ->
